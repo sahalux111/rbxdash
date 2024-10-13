@@ -4,9 +4,17 @@ from datetime import datetime, timedelta
 from threading import Thread
 import time
 from config import db_config
+import pytz
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
+
+# Define the IST timezone
+IST = pytz.timezone('Asia/Kolkata')
+
+# Function to get the current time in IST
+def current_time_ist():
+    return datetime.now(IST)
 
 # Database connection
 def get_db_connection():
@@ -47,7 +55,7 @@ def dashboard():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Fetch schedules of available users
+    # Fetch schedules of available users, adjusted for IST
     cursor.execute("""
         SELECT s.id, u.username, u.role, s.start_time, s.end_time, s.is_available 
         FROM schedules s
@@ -56,7 +64,7 @@ def dashboard():
     """)
     available_schedules = cursor.fetchall()
 
-    # Fetch users currently on break
+    # Fetch users currently on break, adjusted for IST
     cursor.execute("""
         SELECT b.id, u.username, u.role, b.start_time, b.end_time 
         FROM breaks b
@@ -79,6 +87,10 @@ def set_availability():
         start_time = request.form['start_time']
         end_time = request.form['end_time']
         
+        # Convert to IST before saving to the database
+        start_time = IST.localize(datetime.fromisoformat(start_time))
+        end_time = IST.localize(datetime.fromisoformat(end_time))
+        
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("""
@@ -99,7 +111,7 @@ def set_break():
     
     if request.method == 'POST':
         duration = int(request.form['duration'])
-        start_time = datetime.now()
+        start_time = current_time_ist()
         end_time = start_time + timedelta(minutes=duration)
         
         conn = get_db_connection()
@@ -160,7 +172,7 @@ def logout():
     session.clear()
     return redirect(url_for('login'))
 
-# Function to update user availability based on current time
+# Function to update user availability based on current time in IST
 def update_user_statuses():
     while True:
         try:
