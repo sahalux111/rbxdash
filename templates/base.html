@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Availability App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        {% if session.get('role') == 'admin' %}
+            <a href="{{ url_for('admin_panel') }}">Admin Panel</a>
+        {% endif %}
+        <a href="{{ url_for('set_availability') }}">Set Availability</a>
+        <a href="{{ url_for('set_break') }}">Set Break</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </nav>
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

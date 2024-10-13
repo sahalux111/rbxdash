@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Set Availability</h2>
+<form method="post">
+    <label for="start_time">Start Time:</label>
+    <input type="datetime-local" id="start_time" name="start_time" required>
+    <br>
+    <label for="end_time">End Time:</label>
+    <input type="datetime-local" id="end_time" name="end_time" required>
+    <br>
+    <input type="submit" value="Set Availability">
+</form>
+{% endblock %}

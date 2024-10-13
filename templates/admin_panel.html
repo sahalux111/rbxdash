@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Admin Panel</h2>
+
+<h3>Manage Schedules</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Role</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for schedule in schedules %}
+        <tr>
+            <td>{{ schedule[0] }}</td>
+            <td>{{ schedule[1] }}</td>
+            <td>{{ schedule[2] }}</td>
+            <td>{{ schedule[3] }}</td>
+            <td>{{ schedule[4] }}</td>
+            <td>
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="record_id" value="{{ schedule[0] }}">
+                    <input type="hidden" name="record_type" value="schedule">
+                    <input type="submit" value="Delete">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Manage Breaks</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>User</th>
+            <th>Role</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for break in breaks %}
+        <tr>
+            <td>{{ break[0] }}</td>
+            <td>{{ break[1] }}</td>
+            <td>{{ break[2] }}</td>
+            <td>{{ break[3] }}</td>
+            <td>{{ break[4] }}</td>
+            <td>
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="record_id" value="{{ break[0] }}">
+                    <input type="hidden" name="record_type" value="break">
+                    <input type="submit" value="Delete">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

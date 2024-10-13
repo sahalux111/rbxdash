@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Set Break</h2>
+<form method="post">
+    <label for="duration">Break Duration (minutes):</label>
+    <input type="number" id="duration" name="duration" required>
+    <br>
+    <input type="submit" value="Set Break">
+</form>
+{% endblock %}
