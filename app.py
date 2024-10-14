@@ -60,7 +60,7 @@ def dashboard():
         SELECT s.id, u.username, u.role, s.start_time, s.end_time, s.is_available 
         FROM schedules s
         JOIN users u ON s.user_id = u.id
-        WHERE s.end_time > NOW() AND s.is_available = TRUE
+        WHERE s.is_available = TRUE
     """)
     available_schedules = cursor.fetchall()
 
@@ -94,8 +94,8 @@ def set_availability():
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO schedules (user_id, start_time, end_time) 
-            VALUES (%s, %s, %s)
+            INSERT INTO schedules (user_id, start_time, end_time, is_available) 
+            VALUES (%s, %s, %s, TRUE)
         """, (session['user_id'], start_time, end_time))
         conn.commit()
         conn.close()
@@ -200,4 +200,3 @@ Thread(target=update_user_statuses).start()
 
 if __name__ == '__main__':
     app.run(debug=True)
-
