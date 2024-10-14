@@ -55,16 +55,16 @@ def dashboard():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Fetch schedules of available users, adjusted for IST
+    # Fetch schedules of available users
     cursor.execute("""
         SELECT s.id, u.username, u.role, s.start_time, s.end_time, s.is_available 
         FROM schedules s
         JOIN users u ON s.user_id = u.id
-        WHERE s.is_available = TRUE
+        WHERE s.is_available = TRUE AND s.end_time > NOW()
     """)
     available_schedules = cursor.fetchall()
 
-    # Fetch users currently on break, adjusted for IST
+    # Fetch users currently on break
     cursor.execute("""
         SELECT b.id, u.username, u.role, b.start_time, b.end_time 
         FROM breaks b
@@ -181,14 +181,17 @@ def update_user_statuses():
             cursor = conn.cursor()
             
             # Set users as unavailable if their availability end time has passed
-            cursor.execute("UPDATE schedules SET is_available = FALSE WHERE end_time < NOW()")
+            cursor.execute("""
+                UPDATE schedules SET is_available = FALSE 
+                WHERE end_time < NOW()
+            """)
             
             # Update users' availability back to TRUE if their break has ended and they are still within their availability time
             cursor.execute("""
                 UPDATE schedules s
-                JOIN breaks b ON s.user_id = b.user_id
+                LEFT JOIN breaks b ON s.user_id = b.user_id
                 SET s.is_available = TRUE
-                WHERE b.end_time < NOW() AND s.end_time > NOW()
+                WHERE (b.end_time IS NULL OR b.end_time < NOW()) AND s.end_time > NOW()
             """)
             conn.commit()
             conn.close()
@@ -200,3 +203,4 @@ Thread(target=update_user_statuses).start()
 
 if __name__ == '__main__':
     app.run(debug=True)
+
