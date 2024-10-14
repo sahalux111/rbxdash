@@ -4,19 +4,29 @@
 
 <h3>Available Users</h3>
 <ul>
-    {% for schedule in available_schedules %}
-        <li>{{ schedule[1] }} ({{ schedule[2] }}) - Available from {{ schedule[3] }} to {{ schedule[4] }}</li>
+    {% if available_schedules %}
+        {% for schedule in available_schedules %}
+            <li>
+                {{ schedule[1] }} ({{ schedule[2] }}) - Available from 
+                {{ schedule[3] }} to {{ schedule[4] | safe }}
+            </li>
+        {% endfor %}
     {% else %}
         <li>No users are currently available.</li>
-    {% endfor %}
+    {% endif %}
 </ul>
 
 <h3>Users on Break</h3>
 <ul>
-    {% for break in breaks %}
-        <li>{{ break[1] }} ({{ break[2] }}) - On break from {{ break[3] }} to {{ break[4] }}</li>
+    {% if breaks %}
+        {% for break in breaks %}
+            <li>
+                {{ break[1] }} ({{ break[2] }}) - On break from 
+                {{ break[3] }} to {{ break[4] | safe }}
+            </li>
+        {% endfor %}
     {% else %}
         <li>No users are currently on break.</li>
-    {% endfor %}
+    {% endif %}
 </ul>
 {% endblock %}
