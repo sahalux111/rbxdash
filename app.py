@@ -57,7 +57,7 @@ def dashboard():
     
     # Fetch schedules of available users
     cursor.execute("""
-        SELECT s.id, u.username, u.role, s.start_time, s.end_time, s.is_available 
+        SELECT s.id, u.username, u.role, s.start_time, s.end_time 
         FROM schedules s
         JOIN users u ON s.user_id = u.id
         WHERE s.is_available = TRUE AND s.end_time > NOW()
@@ -189,7 +189,7 @@ def update_user_statuses():
             # Update users' availability back to TRUE if their break has ended and they are still within their availability time
             cursor.execute("""
                 UPDATE schedules s
-                LEFT JOIN breaks b ON s.user_id = b.user_id
+                LEFT JOIN breaks b ON s.user_id = b.user_id AND b.end_time > NOW()
                 SET s.is_available = TRUE
                 WHERE (b.end_time IS NULL OR b.end_time < NOW()) AND s.end_time > NOW()
             """)
@@ -203,4 +203,6 @@ Thread(target=update_user_statuses).start()
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
 
